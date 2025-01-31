@@ -1,2 +1,1 @@
-console.log('Web Constants');
-console.log('Modified by test2');
+console.log("Web Constants *******");
