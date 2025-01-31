@@ -3,7 +3,7 @@ name: Subtree Sync
 on:
   push:
     branches:
-      - main # main 브랜치에 push(=PR 머지)가 발생하면 트리거
+      - main
 
 jobs:
   sync-to-constants:
@@ -12,14 +12,15 @@ jobs:
       - name: Check out main repo
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0 # subtree split을 위해 전체 이력이 필요할 수 있음
+          fetch-depth: 0
+          token: ${{ secrets.PERSONAL_TOKEN }} # PAT 사용
 
       - name: Git config
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Subtree push
+      - name: Add remote & push
         run: |
-          # 현재 main 브랜치에 머지된 내용을 constants-test 디렉터리 기준으로 push
+          git remote add constants-repo https://x-access-token:${{ secrets.PERSONAL_TOKEN }}@github.com/Altsoft-KimDongYoung/0131_constants.git
           git subtree push --prefix=constants-test constants-repo main
