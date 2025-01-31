@@ -1,0 +1,28 @@
+name: Subtree Sync
+
+on:
+  push:
+    branches:
+      - main # main 브랜치에 push(=PR 머지)가 발생하면 트리거
+
+jobs:
+  sync-to-constants:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # subtree split을 위해 전체 이력이 필요할 수 있음
+
+      - name: Git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Subtree push
+        run: |
+          # 원격(서브트리 레포) 추가 (필요하다면)
+          git remote add constants-repo https://github.com/Altsoft-KimDongYoung/0131_constants
+
+          # 현재 main 브랜치에 머지된 내용을 constants-test 디렉터리 기준으로 push
+          git subtree push --prefix=constants-test constants-repo main
